@@ -18,7 +18,7 @@ const STORAGE_KEYS = {
   SESSION: 'apex2026_session_v2',
 };
 
-const INITIAL_CLUBS = [
+export const INITIAL_CLUBS = [
   { id: 'CLUB-001', name: 'TechNova',    password: 'tech001',   icon: '💻', category: 'Technology & AI',   stall: 'Hall A-1' },
   { id: 'CLUB-002', name: 'CodeCraft',   password: 'code002',   icon: '⚙️', category: 'Programming',       stall: 'Hall A-2' },
   { id: 'CLUB-003', name: 'RoboZone',    password: 'robo003',   icon: '🤖', category: 'Robotics',           stall: 'Hall B-1' },

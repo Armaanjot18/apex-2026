@@ -4,7 +4,7 @@
  * Students identified by 4-digit ID or name+school.
  */
 
-import { DB, onDataLoaded } from './data.js';
+import { DB, onDataLoaded, INITIAL_CLUBS } from './data.js';
 
 let currentPage = 'home';
 let currentSession = null;
