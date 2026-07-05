@@ -59,15 +59,24 @@ function initNavbar() {
 }
 
 // ─── Routing ────────────────────────────────────────────────────────────
-function navigateTo(page) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-  currentPage = page;
-  const el = document.getElementById(`page-${page}`);
-  if (el) { el.classList.add('active'); window.scrollTo({ top: 0, behavior: 'smooth' }); }
-  const navEl = document.querySelector(`.nav-link[data-page="${page}"]`);
-  if (navEl) navEl.classList.add('active');
-  renderPage(page);
+function navigateTo(pageId) {
+  // Hide all pages
+  document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+  document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
+
+  const targetPage = document.getElementById(`page-${pageId}`);
+  if (targetPage) targetPage.classList.add('active');
+
+  // Handle nav link states (multiple links could map to same page conceptually, but standard is 1-1)
+  const navLink = document.querySelector(`.nav-link[data-page="${pageId}"]`);
+  if (navLink) navLink.classList.add('active');
+
+  currentPage = pageId;
+
+  // Render logic per page
+  if (pageId === 'leaderboard') renderLeaderboard();
+  if (pageId === 'club-dashboard') renderClubDashboard();
+  if (pageId === 'home') renderHomePage();
 }
 
 function renderPage(page) {
@@ -115,26 +124,13 @@ function startLiveUpdates() {
 // ─── HOME PAGE ──────────────────────────────────────────────────────────
 function renderHomePage() {
   const stats = DB.getGlobalStats();
-  animateNumber('totalStudents', stats.totalStudents);
-  animateNumber('totalClubs', stats.totalClubs);
-  animateNumber('totalVisits', stats.totalVisits);
-  document.getElementById('avgRating').textContent = stats.avgRating;
-  document.getElementById('clubCountDisplay').textContent = stats.totalClubs;
+  const elStudents = document.getElementById('totalStudents');
+  const elClubs = document.getElementById('totalClubs');
+  const elVisits = document.getElementById('totalVisits');
 
-  const sorted = DB.getAllClubsSorted('visits').slice(0, 6);
-  document.getElementById('homeClubsGrid').innerHTML = sorted.map((club, i) => `
-    <div class="club-card">
-      <div class="club-card-rank ${getRankClass(i)}">${i===0?'🥇':i===1?'🥈':i===2?'🥉':'#'+(i+1)}</div>
-      <div class="club-card-icon">${club.icon}</div>
-      <div class="club-card-name">${club.name}</div>
-      <div class="club-card-category">${club.category}</div>
-      <div class="club-card-stats">
-        <div class="club-mini-stat"><span class="club-mini-val">${club.total}</span><span class="club-mini-label">Visitors</span></div>
-        <div class="club-mini-stat"><span class="club-mini-val">${club.avgRating}</span><span class="club-mini-label">Rating</span></div>
-      </div>
-      <div class="club-rating-stars">${starsDisplay(parseFloat(club.avgRating))}</div>
-    </div>
-  `).join('');
+  if (elStudents) elStudents.textContent = stats.totalStudents;
+  if (elClubs) elClubs.textContent = stats.totalClubs;
+  if (elVisits) elVisits.textContent = stats.totalVisits;
 }
 
 function animateNumber(elId, target) {
